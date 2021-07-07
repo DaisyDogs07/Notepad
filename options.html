@@ -117,10 +117,10 @@ function options() {
   reset_cache.onclick = () => caches.delete('Notepad')
     .then(() => caches.open('Notepad'))
     .then(cache => cache.addAll([
-      '/',
-      '/options',
-      '/manifest.json',
-      '/favicon.png'
+      '/Notepad',
+      '/Notepad/options',
+      '/Notepad/manifest.json',
+      'https://notepad.daisydogs07.repl.co/favicon.png'
     ]))
     .catch(() => alert('Update failed.'));
   themeSelect.onchange = () => {
