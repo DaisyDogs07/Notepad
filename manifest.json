@@ -1,0 +1,40 @@
+{
+  "name": "Simple Notepad",
+  "short_name": "Notepad",
+  "description": "A simple notepad with local storage/API saving",
+  "orientation": "portrait",
+  "display": "standalone",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "https://notepad.daisydogs07.repl.co/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://notepad.daisydogs07.repl.co/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Options",
+      "short_name": "Options",
+      "description": "Opens the options for the Notepad",
+      "icons": {
+        "src": "https://notepad.daisydogs07.repl.co/favicon96x96.png",
+        "sizes": "96x96",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      "url": "/options"
+    }
+  ],
+  "background_color": "#FFF",
+  "theme_color": "#FFF",
+  "start_url": "/",
+  "scope":"/"
+}
