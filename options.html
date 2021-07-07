@@ -1,0 +1,203 @@
+<html lang="en-US">
+  <head>
+    <meta name="google-site-verification" content="Mr7RLiKGa2iySBOLk57_iUAXZP6QZLIipb3F1cKqlqo">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta property="og:site_name" content="Notepad">
+    <meta property="og:url" content="https://notepad.daisydogs07.repl.co/options">
+    <meta property="og:title" content="Notepad Options">
+    <meta property="og:description" content="Options for the Notepad">
+    <meta property="og:type" content="website">
+    <meta property="og:image:url" content="https://notepad.daisydogs07.repl.co/favicon.png">
+    <meta property="og:locale" content="en_US">
+    <meta name="description" content="Options for the Notepad">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="search" href="/sitemap.xml" type="application/opensearchdescription+xml">
+    <link rel="apple-touch-icon" href="/favicon.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="canonical" href="https://notepad.daisydogs07.repl.co">
+    <link rel="shortcut icon" href="/favicon.png">
+    <style>#text {
+  text-shadow: 0.5px 0.5px 1px #999;
+}
+#themeSelect {
+  text-shadow: 0.5px 0.5px 1px #999;
+}
+#reset_id {
+  text-shadow: 0.5px 0.5px 1px #999;
+}
+#reset_cache {
+  text-shadow: 0.5px 0.5px 1px #999;
+}
+#langSelect {
+  text-shadow: 0.5px 0.5px 1px #999;
+}</style>
+    <script>if (!localStorage.options)
+  localStorage.options = '{"theme":"light","language":"English"}';
+let o = JSON.parse(localStorage.options);
+setInterval(() => {
+  try {
+    o = JSON.parse(localStorage.options);
+  } catch (e) {}
+}, 500);
+function updateLang(language = o.language) {
+  switch (language) {
+    case 'English':
+      document.body.parentElement.lang = 'en-US';
+      break;
+    case 'Espanol':
+      document.body.parentElement.lang = 'es';
+      break;
+    case 'Francais':
+      document.body.parentElement.lang = 'fr';
+      break;
+  }
+}
+function getText(text) {
+  let res;
+  switch (document.body.parentElement.lang) {
+    case 'es':
+      res = {
+        "Theme:": "Tema:",
+        Light: "Luz",
+        Dark: "Oscuro",
+        "Reset user ID": "Restablecer el ID de usuario",
+        "Update Notepad": "Actualizar el Bloc de notas",
+        "Language (Beta):": "Idioma (Beta):",
+      }[text];
+      break;
+    case 'fr':
+      res = {
+        "Theme:": "Thème:",
+        Light: "Lumière",
+        Dark: "Obscur",
+        "Reset user ID": "Réinitialiser l'ID utilisateur",
+        "Update Notepad": "Mise à jour du bloc-notes",
+        "Language (Beta):": "Langue (Bêta):"
+      }[text];
+      break;
+  }
+  return res || text;
+}
+function updateText(language) {
+  updateLang(language);
+  text[0].innerHTML = getText('Theme:');
+  themeSelect.options[0].innerHTML = getText('Light');
+  themeSelect.options[1].innerHTML = getText('Dark');
+  reset_id.innerHTML = getText('Reset user ID');
+  reset_cache.innerHTML = getText('Update Notepad');
+  text[2].innerHTML = getText('Language (Beta):');
+}
+function options() {
+  if (o.theme === 'dark') {
+    themeSelect.value = getText('Dark');
+    [
+      text[0],
+      text[1],
+      text[2]
+    ].forEach(t => t.style = 'font-size: 16px; color: #FFF; text-shadow: 0.5px 0.5px 1px #666;');
+    [
+      themeSelect,
+      reset_id,
+      reset_cache,
+      langSelect
+    ].forEach(b => b.style = 'margin-left: 13px; color: #FFF; background-color: #000; text-shadow: 0.5px 0.5px 1px #666;');
+    version.style.color = '#FFF';
+    document.body.style.backgroundColor = '#000';
+  }
+  ononline = () => {
+    reset_cache.disabled = false;
+  };
+  onoffline = () => {
+    reset_cache.disabled = true;
+  };
+  if (!navigator.onLine)
+    onoffline();
+  reset_id.onclick = () => localStorage.removeItem('userID');
+  reset_cache.onclick = () => caches.delete('Notepad')
+    .then(() => caches.open('Notepad'))
+    .then(cache => cache.addAll([
+      '/',
+      '/options',
+      '/manifest.json',
+      '/favicon.png'
+    ]))
+    .catch(() => alert('Update failed.'));
+  themeSelect.onchange = () => {
+    if (themeSelect.value === getText('Dark')) {
+      if (o.theme === 'light') {
+        localStorage.options = `{"theme":"dark","language":"${o.language}"}`;
+        [
+          text[0],
+          text[1],
+          text[2]
+        ].forEach(t => t.style = 'font-size: 16px; color: #FFF; text-shadow: 0.5px 0.5px 1px #666;');
+        [
+          themeSelect,
+          reset_id,
+          reset_cache,
+          langSelect
+        ].forEach(b => b.style = 'margin-left: 13px; color: #FFF; background-color: #000; text-shadow: 0.5px 0.5px 1px #666;');
+        version.style.color = '#FFF';
+        document.body.style.backgroundColor = '#000';
+      }
+    }
+    if (themeSelect.value === getText('Light')) {
+      if (o.theme === 'dark') {
+        localStorage.options = `{"theme":"light","language":"${o.language}"}`;
+        [
+          text[0],
+          text[1],
+          text[2]
+        ].forEach(t => t.style = 'font-size: 16px;');
+        [
+          themeSelect,
+          reset_id,
+          reset_cache,
+          langSelect
+        ].forEach(b => b.style = 'margin-left: 13px;');
+        version.style.color = null;
+        document.body.style.backgroundColor = null;
+      }
+    }
+  }
+  langSelect.onchange = () => {
+    localStorage.options = `{"theme":"${o.theme}","language":"${langSelect.value}"}`;
+    updateText(langSelect.value);
+  }
+  langSelect.value = o.language;
+  updateText();
+  onstorage = e => {
+    if (e.key === 'options') {
+      o = JSON.stringify(e.newValue);
+      updateText(o.language);
+    }
+  }
+}</script>
+    <title>Notepad Options</title>
+  </head>
+  <body>
+    <text style="font-size: 16px;" id="text">Theme:</text>
+    <br>
+    <select id="themeSelect" style="margin-left: 13px;">
+      <option name="Light">Light</option>
+      <option name="Dark">Dark</option>
+    </select>
+    <br>
+    <text style="font-size: 16px;" id="text">Local:</text>
+    <br>
+    <button style="margin-left: 13px;" id="reset_id">Reset user ID</button>
+    <br>
+    <button style="margin-left: 13px;" id="reset_cache">Update Notepad</button>
+    <br>
+    <text style="font-size: 16px;" id="text">Language (Beta):</text>
+    <br>
+    <select style="margin-left: 13px;" id="langSelect">
+      <option name="English">English</option>
+      <option name="Espanol">Espanol</option>
+      <option name="Francais">Francais</option>
+    </select>
+    <text id="version" style="position: absolute; right: 0; bottom: 0; font-size: 13px; opacity: 0.25; font-family: monospace">v1.3.11 - github.com</text>
+    <script>options()</script>
+  </body>
+</html>
