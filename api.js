@@ -1,4 +1,4 @@
-const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const database = new (require('SimpleDatabase'));
 
@@ -11,7 +11,7 @@ function readBody(req) {
   });
 }
 
-https.createServer(async (req, res) => {
+http.createServer(async (req, res) => {
   const path = req.url.split('?')[0];
   if (!path.startsWith('/') || path.includes('..'))
     return res.writeHead(404).end();
