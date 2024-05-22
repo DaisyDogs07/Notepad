@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta property="og:title" content="Notepad Settings">
+    <meta property="og:site_name" content="Notepad">
+    <meta property="og:description" content="Settings for the Notepad">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="en_US">
+    <meta name="description" content="Settings for the Notepad">
+    <meta name="theme-color" content="#fff">
+    <link rel="stylesheet" href="settings.css">
+    <script src="settings.js"></script>
+  </head>
+  <body>
+    <text>Theme:</text>
+    <br>
+    <select style="margin-left: 12px;" id="themeSelect">
+      <option name="System">System</option>
+      <option name="Light">Light</option>
+      <option name="Dark">Dark</option>
+    </select>
+    <br>
+    <text>User ID <a href="" title="Allows you to never lose your notes by saving it to a server">(?)</a>:</text>
+    <br>
+    <input style="margin-left: 12px;" id="IDInput" placeholder="Enter ID here..." type="password"></input>
+    <button id="IDCopy">Copy</button>
+    <br>
+    <button style="margin-left: 12px;" id="IDSave">Save</button>
+    <button id="IDClear">Clear</button>
+    <br>
+    <text>Wrap:</text>
+    <br>
+    <select style="margin-left: 12px;" id="wrapSelect">
+      <option name="yes">Yes</option>
+      <option name="no">No</option>
+    </select>
+    <br>
+    <button id="feedback">Send Feedback</button>
+  </body>
+</html>

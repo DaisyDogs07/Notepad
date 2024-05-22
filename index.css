@@ -1,0 +1,34 @@
+body {
+  transition: opacity 1.75s cubic-bezier(.5, 0, .5, 1);
+}
+body.dark {
+  color: #fff;
+  background-color: #000;
+}
+textarea {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: calc(100% - 22px);
+  border: 1px solid #000;
+  border-radius: 2.5px;
+  text-shadow: .5px .5px 1px #999;
+  transition: inherit;
+}
+textarea.dark {
+  color: #fff;
+  background-color: #000;
+  border: 1px solid #fff;
+  text-shadow: .5px .5px 1px #666;
+}
+button {
+  z-index: 0;
+  position: relative;
+  text-shadow: .5px .5px 1px #999;
+  transition: inherit;
+}
+button.dark {
+  color: #fff;
+  background-color: #000;
+  text-shadow: .5px .5px 1px #666;
+}

@@ -1,0 +1,43 @@
+body.dark {
+  color: #fff;
+  background-color: #000;
+}
+
+text {
+  text-shadow: .5px .5px 1px #999;
+}
+
+text.dark {
+  color: #fff;
+  text-shadow: .5px .5px 1px #666;
+}
+
+input {
+  text-shadow: .5px .5px 1px #999;
+}
+
+input.dark {
+  color: #fff;
+  background-color: #000;
+  text-shadow: .5px .5px 1px #666;
+}
+
+select {
+  text-shadow: .5px .5px 1px #999;
+}
+
+select.dark {
+  color: #fff;
+  background-color: #000;
+  text-shadow: .5px .5px 1px #666;
+}
+
+button {
+  text-shadow: .5px .5px 1px #999;
+}
+
+button.dark {
+  color: #fff;
+  background-color: #000;
+  text-shadow: .5px .5px 1px #666;
+}
