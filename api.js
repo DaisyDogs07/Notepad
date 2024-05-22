@@ -12,7 +12,7 @@ function readBody(req) {
   });
 }
 
-http.createServer(async (req, res) => {
+https.createServer(async (req, res) => {
   const path = req.url.split('?')[0];
   if (!path.startsWith('/') || path.includes('..'))
     return res.writeHead(404).end();
