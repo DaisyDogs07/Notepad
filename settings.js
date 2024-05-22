@@ -12,7 +12,6 @@ function updateTheme(light) {
     IDSave.classList.remove('dark');
     IDClear.classList.remove('dark');
     wrapSelect.classList.remove('dark');
-    feedback.classList.remove('dark');
   } else {
     document.body.classList.add('dark');
     {
@@ -26,7 +25,6 @@ function updateTheme(light) {
     IDSave.classList.add('dark');
     IDClear.classList.add('dark');
     wrapSelect.classList.add('dark');
-    feedback.classList.add('dark');
   }
 }
 

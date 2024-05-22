@@ -2,6 +2,8 @@ const http = require('http');
 const fs = require('fs');
 const database = new (require('SimpleDatabase'));
 
+require('./setup.js');
+
 function readBody(req) {
   return new Promise((res, rej) => {
     let chunks = [];
@@ -12,7 +14,7 @@ function readBody(req) {
 }
 
 http.createServer(async (req, res) => {
-  const path = req.url.split('?')[0];
+  let path = req.url.split('?')[0];
   if (!path.startsWith('/') || path.includes('..'))
     return res.writeHead(404).end();
   if (path.startsWith('/api/')) {
@@ -111,10 +113,15 @@ http.createServer(async (req, res) => {
     }
   }
   if (path === '/')
-    return fs.createReadStream('./index.html')
-      .pipe(res.writeHead(200));
-  if (fs.existsSync('.' + path))
+    path = '/index.html';
+  if (fs.existsSync('.' + path)) {
+    if (fs.existsSync('.' + path + '.gz'))
+      return fs.createReadStream('.' + path + '.gz')
+        .pipe(res.writeHead(200, {
+          'Content-Encoding': 'gzip'
+        }));
     return fs.createReadStream('.' + path)
       .pipe(res.writeHead(200));
-  res.writeHead(404).end();
+  }
+  return res.writeHead(404).end();
 }).listen(80);
