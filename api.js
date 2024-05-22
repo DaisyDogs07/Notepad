@@ -1,4 +1,3 @@
-const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const database = new (require('SimpleDatabase'));
@@ -118,4 +117,4 @@ https.createServer(async (req, res) => {
     return fs.createReadStream('.' + path)
       .pipe(res.writeHead(200));
   res.writeHead(404).end();
-}).listen(443);
+}).listen(8080);
