@@ -118,11 +118,4 @@ https.createServer(async (req, res) => {
     return fs.createReadStream('.' + path)
       .pipe(res.writeHead(200));
   res.writeHead(404).end();
-}).listen(443);
-
-http.createServer((req, res) => {
-  console.log(req.headers['host']);
-  res.writeHead(301, {
-    'Location': 'https://' + req.headers.host
-  }).end();
 }).listen(80);
