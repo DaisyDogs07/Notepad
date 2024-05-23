@@ -31,7 +31,6 @@ const {
     file.replace('.', '.min.'),
     fs.readFileSync(file, 'utf8')
       .replace(/\r?\n {0,}/g, '')
-      .replace('\r?\n', '')
   );
   pipeline(
     fs.createReadStream(file.replace('.', '.min.')),
@@ -41,4 +40,26 @@ const {
       fs.unlinkSync(file.replace('.', '.min.'));
     }
   );
-})
+});
+
+[
+  'index.css',
+  'settings.css'
+].forEach(file => {
+  fs.writeFileSync(
+    file.replace('.', '.min.'),
+    fs.readFileSync(file, 'utf8')
+      .replace(/\r?\n {0,}/g, '')
+      .replace(/: /g, ':')
+      .replace(/, /g, ',')
+      .replace(/ {/g, '{')
+  );
+  pipeline(
+    fs.createReadStream(file.replace('.', '.min.')),
+    createGzip(),
+    fs.createWriteStream(file + '.gz'),
+    () => {
+      fs.unlinkSync(file.replace('.', '.min.'));
+    }
+  );
+});

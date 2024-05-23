@@ -126,12 +126,12 @@ async function checkAndProceedToAPI() {
 }
 
 function createUUID() {
-  return Math.round(Math.random() * 0x290d740FFFF).toString(36).padStart(8, '0') + '-' +
-    Math.round(Math.random() * 0x19A0FF).toString(36).padStart(4, '0') + '-' +
-    Math.round(Math.random() * 0x19A0FF).toString(36).padStart(4, '0') + '-' +
-    Math.round(Math.random() * 0x19A0FF).toString(36).padStart(4, '0') + '-' +
-    Math.round(Math.random() * 0x290d740FFFF).toString(36).padStart(8, '0') +
-    Math.round(Math.random() * 0x19A0FF).toString(36).padStart(4, '0');
+  return Math.round(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0') + '-' +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
+    Math.round(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0') +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0');
 }
 
 async function createID() {

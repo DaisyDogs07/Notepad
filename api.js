@@ -2,8 +2,6 @@ const http = require('http');
 const fs = require('fs');
 const database = new (require('SimpleDatabase'));
 
-require('./setup.js');
-
 function readBody(req) {
   return new Promise((res, rej) => {
     let chunks = [];
