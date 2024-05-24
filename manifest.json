@@ -1,0 +1,50 @@
+{
+  "name": "Simple Notepad",
+  "short_name": "Notepad",
+  "description": "A simple notepad with local/API saving",
+  "orientation": "portrait",
+  "display": "standalone",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "favicon96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Settings",
+      "short_name": "Settings",
+      "description": "Opens the settings page",
+      "icons": [
+        {
+          "src": "favicon96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ],
+      "url": "/options.html"
+    }
+  ],
+  "background_color": "#FFF",
+  "theme_color": "#FFF",
+  "start_url": "/",
+  "scope": "/"
+}

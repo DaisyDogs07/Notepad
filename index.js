@@ -2,7 +2,7 @@ const fileUpload = document.createElement('input');
 fileUpload.type = 'file';
 
 function opensettings() {
-  open('/settings.html', 'Notepad Settings');
+  open('/settings.html', 'new-window', 'width=325,height=200');
 }
 
 async function getAPINote() {
@@ -272,9 +272,11 @@ matchMedia("(prefers-color-scheme: light)").onchange = e => {
 }
 
 addEventListener('storage', e => {
-  const opt = JSON.parse(e.newValue);
-  updateTheme(opt.theme.value);
-  noteArea.style.whiteSpace = opt.wrap ? null : 'nowrap';
+  if (e.key == 'settings') {
+    const opt = JSON.parse(e.newValue);
+    updateTheme(opt.theme.value);
+    noteArea.style.whiteSpace = opt.wrap ? null : 'nowrap';
+  }
 });
 
 addEventListener('DOMContentLoaded', () => {
