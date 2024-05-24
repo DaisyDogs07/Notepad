@@ -44,7 +44,8 @@ const {
 
 [
   'index.css',
-  'settings.css'
+  'settings.css',
+  'manifest.json'
 ].forEach(file => {
   fs.writeFileSync(
     file.replace('.', '.min.'),

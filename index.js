@@ -1,8 +1,8 @@
 const fileUpload = document.createElement('input');
 fileUpload.type = 'file';
 
-function opensettings() {
-  open('/settings.html', 'new-window', 'width=325,height=200');
+function openSettings() {
+  open('/settings.html', 'new-window', 'width=500,height=200');
 }
 
 async function getAPINote() {
@@ -45,41 +45,74 @@ async function saveAPI() {
   return alert('Note saved!');
 }
 
-function checkIDInput(e) {
+function checkIDInput() {
   if (noteArea.value && noteArea.value.match(/^[-A-Za-z0-9]{0,}$/))
     settingsBtn.disabled = false;
   else settingsBtn.disabled = true;
 }
 
-function switchToLocal() {
+function recursiveAssign(target, source) {
+  for (const key of Object.keys(source)) {
+    const targetValue = target[key];
+    const sourceValue = source[key];
+    if (Array.isArray(sourceValue)) {
+      if (!Array.isArray(targetValue))
+        target[key] = [];
+      recursiveAssign(target[key], sourceValue);
+    } else if (typeof sourceValue === 'object' && sourceValue !== null) {
+      if (typeof targetValue !== 'object' || targetValue === null)
+        target[key] = {};
+      recursiveAssign(target[key], sourceValue);
+    } else target[key] = sourceValue;
+  }
+}
+
+async function transitionUI(data) {
   noteArea.disabled = true;
   saveBtn.disabled = true;
   switchBtn.disabled = true;
   settingsBtn.disabled = true;
   document.body.style.opacity = '0';
   setTimeout(() => {
-    document.body.style.transition = 'opacity 0s ease 0s';
     requestAnimationFrame(() => {
-      noteArea.style.height = '';
-      noteArea.placeholder = 'Type note here...';
-      noteArea.value = localStorage.noteValue;
-      noteArea.oninput = null;
-      saveBtn.innerText = 'Save';
-      saveBtn.onclick = saveLocal;
-      switchBtn.innerText = 'Use API';
-      switchBtn.onclick = switchToAPI;
-      settingsBtn.innerText = 'Open settings';
-      settingsBtn.onclick = opensettings;
-      document.body.style.transition = '';
+      recursiveAssign(noteArea, data.noteArea);
+      recursiveAssign(saveBtn, data.saveBtn);
+      recursiveAssign(switchBtn, data.switchBtn);
+      recursiveAssign(settingsBtn, data.settingsBtn);
       requestAnimationFrame(() => {
-        noteArea.disabled = false;
-        saveBtn.disabled = false;
-        switchBtn.disabled = false;
-        settingsBtn.disabled = false;
         document.body.style.opacity = '';
       });
     });
   }, 1750);
+}
+
+async function switchToLocal() {
+  transitionUI({
+    noteArea: {
+      style: {
+        height: ''
+      },
+      placeholder: 'Type note here...',
+      value: localStorage.noteValue,
+      oninput: null,
+      disabled: false
+    },
+    saveBtn: {
+      innerText: 'Save',
+      onclick: saveLocal,
+      disabled: false
+    },
+    switchBtn: {
+      innerText: 'Use API',
+      onclick: switchToAPI,
+      disabled: false
+    },
+    settingsBtn: {
+      innerText: 'Open settings',
+      onclick: openSettings,
+      disabled: false
+    }
+  });
 }
 
 async function validateIDExists() {
@@ -95,34 +128,32 @@ async function checkAndProceedToAPI() {
   const res = await getAPINote();
   if (!res[0])
     return alert('Failed to get your API note...');
-  noteArea.disabled = true;
-  saveBtn.disabled = true;
-  switchBtn.disabled = true;
-  settingsBtn.disabled = true;
-  document.body.style.opacity = '0';
-  setTimeout(() => {
-    document.body.style.transition = 'opacity 0s ease 0s';
-    requestAnimationFrame(async () => {
-      noteArea.style.height = '';
-      noteArea.placeholder = 'Type note here...';
-      noteArea.value = res[1];
-      noteArea.oninput = null;
-      saveBtn.innerText = 'Save';
-      saveBtn.onclick = saveAPI;
-      switchBtn.innerText = 'Use Local';
-      switchBtn.onclick = switchToLocal;
-      settingsBtn.innerText = 'Open settings';
-      settingsBtn.onclick = opensettings;
-      document.body.style.transition = '';
-      requestAnimationFrame(() => {
-        noteArea.disabled = false;
-        saveBtn.disabled = false;
-        switchBtn.disabled = false;
-        settingsBtn.disabled = false;
-        document.body.style.opacity = '';
-      });
-    });
-  }, 1750);
+  transitionUI({
+    noteArea: {
+      style: {
+        height: ''
+      },
+      placeholder: 'Type note here...',
+      value: res[1],
+      oninput: null,
+      disabled: false
+    },
+    saveBtn: {
+      innerText: 'Save',
+      onclick: saveAPI,
+      disabled: false
+    },
+    switchBtn: {
+      innerText: 'Use Local',
+      onclick: switchToLocal,
+      disabled: false
+    },
+    settingsBtn: {
+      innerText: 'Open settings',
+      onclick: openSettings,
+      disabled: false
+    }
+  });
 }
 
 function createUUID() {
@@ -150,64 +181,61 @@ async function createAndProceedToAPI() {
   if (!id)
     return alert('Failed to create an ID...');
   localStorage.id = id;
-  noteArea.disabled = true;
-  saveBtn.disabled = true;
-  switchBtn.disabled = true;
-  settingsBtn.disabled = true;
-  document.body.style.opacity = '0';
-  setTimeout(() => {
-    document.body.style.transition = 'opacity 0s ease 0s';
-    requestAnimationFrame(async () => {
-      noteArea.style.height = '';
-      noteArea.placeholder = 'Type note here...';
-      noteArea.value = '';
-      noteArea.oninput = null;
-      saveBtn.innerText = 'Save';
-      saveBtn.onclick = saveAPI;
-      switchBtn.innerText = 'Use Local';
-      switchBtn.onclick = switchToLocal;
-      settingsBtn.innerText = 'Open settings';
-      settingsBtn.onclick = opensettings;
-      document.body.style.transition = '';
-      requestAnimationFrame(() => {
-        noteArea.disabled = false;
-        saveBtn.disabled = false;
-        switchBtn.disabled = false;
-        settingsBtn.disabled = false;
-        document.body.style.opacity = '';
-      });
-    });
-  }, 1750);
+  transitionUI({
+    noteArea: {
+      style: {
+        height: ''
+      },
+      placeholder: 'Type note here...',
+      value: '',
+      oninput: null,
+      disabled: false
+    },
+    saveBtn: {
+      innerText: 'Save',
+      onclick: saveAPI,
+      disabled: false
+    },
+    switchBtn: {
+      innerText: 'Use Local',
+      onclick: switchToLocal,
+      disabled: false
+    },
+    settingsBtn: {
+      innerText: 'Open settings',
+      onclick: openSettings,
+      disabled: false
+    }
+  });
 }
 
 function switchToUserIDPrompt() {
-  noteArea.disabled = true;
-  saveBtn.disabled = true;
-  switchBtn.disabled = true;
-  settingsBtn.disabled = true;
-  document.body.style.opacity = '0';
-  setTimeout(() => {
-    document.body.style.transition = 'opacity 0s ease 0s';
-    requestAnimationFrame(() => {
-      noteArea.style.height = '10%';
-      noteArea.placeholder = 'Enter User ID here...';
-      noteArea.value = '';
-      noteArea.oninput = checkIDInput;
-      saveBtn.innerText = 'Back';
-      saveBtn.onclick = switchToLocal;
-      switchBtn.innerText = 'Create New';
-      switchBtn.onclick = createAndProceedToAPI;
-      settingsBtn.innerText = 'Proceed To API';
-      settingsBtn.onclick = checkAndProceedToAPI;
-      document.body.style.transition = '';
-      requestAnimationFrame(() => {
-        noteArea.disabled = false;
-        saveBtn.disabled = false;
-        switchBtn.disabled = false;
-        document.body.style.opacity = '';
-      });
-    });
-  }, 1750);
+  transitionUI({
+    noteArea: {
+      style: {
+        height: '10%'
+      },
+      placeholder: 'Enter User ID here...',
+      value: '',
+      oninput: checkIDInput,
+      disabled: false
+    },
+    saveBtn: {
+      innerText: 'Back',
+      onclick: switchToLocal,
+      disabled: false
+    },
+    switchBtn: {
+      innerText: 'Create New',
+      onclick: createAndProceedToAPI,
+      disabled: false
+    },
+    settingsBtn: {
+      innerText: 'Procees To API',
+      onclick: checkAndProceedToAPI,
+      disabled: true
+    }
+  });
 }
 
 async function switchToAPI() {
@@ -218,58 +246,51 @@ async function switchToAPI() {
     delete localStorage.id;
     return switchToUserIDPrompt();
   }
-  noteArea.disabled = true;
-  saveBtn.disabled = true;
-  switchBtn.disabled = true;
-  settingsBtn.disabled = true;
-  document.body.style.opacity = '0';
-  setTimeout(() => {
-    document.body.style.transition = 'opacity 0s ease 0s';
-    requestAnimationFrame(async () => {
-      noteArea.value = res[1];
-      noteArea.oninput = null;
-      saveBtn.innerText = 'Save';
-      saveBtn.onclick = saveAPI;
-      switchBtn.innerText = 'Use Local';
-      switchBtn.onclick = switchToLocal;
-      settingsBtn.innerText = 'Open settings';
-      settingsBtn.onclick = opensettings;
-      document.body.style.transition = '';
-      requestAnimationFrame(() => {
-        noteArea.disabled = false;
-        saveBtn.disabled = false;
-        switchBtn.disabled = false;
-        settingsBtn.disabled = false;
-        document.body.style.opacity = '';
-      });
-    });
-  }, 1750);
+  transitionUI({
+    noteArea: {
+      style: {
+        height: ''
+      },
+      placeholder: 'Type note here...',
+      value: res[1],
+      oninput: null,
+      disabled: false
+    },
+    saveBtn: {
+      innerText: 'Save',
+      onclick: saveAPI,
+      disabled: false
+    },
+    switchBtn: {
+      innerText: 'Use Local',
+      onclick: switchToLocal,
+      disabled: false
+    },
+    settingsBtn: {
+      innerText: 'Open settings',
+      onclick: openSettings,
+      disabled: false
+    }
+  });
 }
 
 function updateTheme(light) {
-  if (light) {
-    document.body.classList.remove('dark');
-    noteArea.classList.remove('dark');
-    saveBtn.classList.remove('dark');
-    switchBtn.classList.remove('dark');
-    settingsBtn.classList.remove('dark');
-  } else {
-    document.body.classList.add('dark');
-    noteArea.classList.add('dark');
-    saveBtn.classList.add('dark');
-    switchBtn.classList.add('dark');
-    settingsBtn.classList.add('dark');
-  }
+  const method = light ? 'remove' : 'add';
+  document.body.classList[method]('dark');
+  noteArea.classList[method]('dark');
+  saveBtn.classList[method]('dark');
+  switchBtn.classList[method]('dark');
+  settingsBtn.classList[method]('dark');
 }
 
-matchMedia("(prefers-color-scheme: light)").onchange = e => {
+matchMedia("(prefers-color-scheme: light)").addEventListener('change', e => {
   const opt = JSON.parse(localStorage.settings);
   if (opt.theme.system) {
     updateTheme(e.matches);
     opt.theme.value = e.matches;
     localStorage.settings = JSON.stringify(opt);
   }
-}
+});
 
 addEventListener('storage', e => {
   if (e.key == 'settings') {
@@ -279,7 +300,7 @@ addEventListener('storage', e => {
   }
 });
 
-addEventListener('DOMContentLoaded', () => {
+function onLoad() {
   if (!localStorage.noteValue)
     localStorage.noteValue = '';
   else noteArea.value = localStorage.noteValue;
@@ -307,7 +328,5 @@ addEventListener('DOMContentLoaded', () => {
   }
   saveBtn.onclick = saveLocal;
   switchBtn.onclick = switchToAPI;
-  settingsBtn.onclick = opensettings;
-}, {
-  once: true
-});
+  settingsBtn.onclick = openSettings;
+};
