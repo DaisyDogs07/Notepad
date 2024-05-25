@@ -281,6 +281,7 @@ function updateTheme(light) {
   saveBtn.classList[method]('dark');
   switchBtn.classList[method]('dark');
   settingsBtn.classList[method]('dark');
+  document.head.children.namedItem('theme-color').content = light ? '#fff' : '#000';
 }
 
 matchMedia("(prefers-color-scheme: light)").addEventListener('change', e => {

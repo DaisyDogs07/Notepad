@@ -1,31 +1,18 @@
 function updateTheme(light) {
-  if (light) {
-    document.body.classList.remove('dark');
-    {
-      const elems = document.getElementsByTagName('text');
-      for (let i = 0; i !== elems.length; ++i)
-        elems.item(i).classList.remove('dark');
-    }
-    themeSelect.classList.remove('dark');
-    IDInput.classList.remove('dark');
-    IDCopy.classList.remove('dark');
-    IDSave.classList.remove('dark');
-    IDClear.classList.remove('dark');
-    wrapSelect.classList.remove('dark');
-  } else {
-    document.body.classList.add('dark');
-    {
-      const elems = document.getElementsByTagName('text');
-      for (let i = 0; i !== elems.length; ++i)
-        elems.item(i).classList.add('dark');
-    }
-    themeSelect.classList.add('dark');
-    IDInput.classList.add('dark');
-    IDCopy.classList.add('dark');
-    IDSave.classList.add('dark');
-    IDClear.classList.add('dark');
-    wrapSelect.classList.add('dark');
+  const method = light ? 'remove' : 'add';
+  document.body.classList[method]('dark');
+  {
+    const elems = document.getElementsByTagName('text');
+    for (let i = 0; i !== elems.length; ++i)
+      elems.item(i).classList[method]('dark');
   }
+  themeSelect.classList[method]('dark');
+  IDInput.classList[method]('dark');
+  IDCopy.classList[method]('dark');
+  IDSave.classList[method]('dark');
+  IDClear.classList[method]('dark');
+  wrapSelect.classList[method]('dark');
+  document.head.children.namedItem('theme-color').content = light ? '#fff' : '#000';
 }
 
 matchMedia("(prefers-color-scheme: light)").onchange = e => {
@@ -45,7 +32,7 @@ addEventListener('storage', e => {
   noteArea.style.whiteSpace = opt.wrap ? null : 'nowrap';
 });
 
-addEventListener('DOMContentLoaded', () => {
+function onLoad() {
   if (!localStorage.settings)
     localStorage.settings = JSON.stringify({
       theme: {
@@ -99,4 +86,4 @@ addEventListener('DOMContentLoaded', () => {
     opt.wrap = (wrapSelect.value == 'Yes');
     localStorage.settings = JSON.stringify(opt);
   });
-});
+}
