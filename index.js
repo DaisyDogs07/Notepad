@@ -2,27 +2,29 @@ const fileUpload = document.createElement('input');
 fileUpload.type = 'file';
 
 function openSettings() {
-  open('/settings.html', 'new-window', 'width=500,height=200');
+  open('/settings.html', 'new-window', 'width=450,height=200');
 }
 
-async function getAPINote() {
-  const res = await fetch('/api/note/' + localStorage.id, {
-    method: 'GET',
-    cache: 'no-cache'
-  });
-  if (!res.ok)
-    return [false, ''];
-  return [true, Buffer.from(await res.arrayBuffer()).toString('utf8')];
+function getAPINote() {
+  return fetch('/api/note/' + localStorage.id, {
+    method: 'GET'
+  }).then(res => {
+    if (!res.ok)
+      return [false, ''];
+    return res.arrayBuffer().then(abuf => {
+      return [true, Buffer.from(abuf).toString('utf8')];
+    }, () => [true, '']);
+  }, () => [false, '']);
 }
 
 async function sendNewAPINote() {
-  return (await fetch('/api/note', {
-    method: 'PATCH',
+  return fetch('/api/note', {
+    method: 'POST',
     body: JSON.stringify({
       id: localStorage.id,
       value: noteArea.value
     })
-  })).ok;
+  }).then(res => res.ok, () => false);
 }
 
 function saveLocal() {
@@ -32,11 +34,36 @@ function saveLocal() {
   return alert('Note saved!');
 }
 
+function createUUID() {
+  return Math.round(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0') + '-' +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
+    Math.round(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0') +
+    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0');
+}
+
+function createID() {
+  const uuid = createUUID();
+  return fetch('/api/id', {
+    method: 'POST',
+    body: uuid
+  }).then(res => {
+    if (res.ok)
+      return uuid;
+    return false;
+  }, () => false);
+}
+
 async function saveAPI() {
-  const res = await getAPINote();
+  let res = await getAPINote();
   if (!res[0]) {
-    alert('ID no longer exists...');
-    return switchBtn.click();
+    delete localStorage.id;
+    let res2 = await createID();
+    if (!res2)
+      return alert('Failed to save...');
+    localStorage.id = res2;
+    res = [true, ''];
   }
   if (noteArea.value === res[1])
     return alert('There is nothing to save...');
@@ -67,7 +94,7 @@ function recursiveAssign(target, source) {
   }
 }
 
-async function transitionUI(data) {
+function transitionUI(data) {
   noteArea.disabled = true;
   saveBtn.disabled = true;
   switchBtn.disabled = true;
@@ -86,7 +113,7 @@ async function transitionUI(data) {
   }, 1750);
 }
 
-async function switchToLocal() {
+function switchToLocal() {
   transitionUI({
     noteArea: {
       style: {
@@ -115,10 +142,10 @@ async function switchToLocal() {
   });
 }
 
-async function validateIDExists() {
-  return (await fetch('/api/id/' + noteArea.value, {
+function validateIDExists() {
+  return fetch('/api/id/' + noteArea.value, {
     method: 'GET'
-  })).ok;
+  }).then(res => res.ok, () => false);
 }
 
 async function checkAndProceedToAPI() {
@@ -154,26 +181,6 @@ async function checkAndProceedToAPI() {
       disabled: false
     }
   });
-}
-
-function createUUID() {
-  return Math.round(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0') + '-' +
-    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
-    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
-    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0') + '-' +
-    Math.round(Math.random() * 0xFFFFFFFF).toString(16).padStart(8, '0') +
-    Math.round(Math.random() * 0xFFFF).toString(16).padStart(4, '0');
-}
-
-async function createID() {
-  const uuid = createUUID();
-  const res = (await fetch('/api/id', {
-    method: 'POST',
-    body: uuid
-  })).ok;
-  if (res)
-    return uuid;
-  return false;
 }
 
 async function createAndProceedToAPI() {
@@ -284,7 +291,7 @@ function updateTheme(light) {
   document.head.children.namedItem('theme-color').content = light ? '#fff' : '#000';
 }
 
-matchMedia("(prefers-color-scheme: light)").addEventListener('change', e => {
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
   const opt = JSON.parse(localStorage.settings);
   if (opt.theme.system) {
     updateTheme(e.matches);
@@ -301,6 +308,14 @@ addEventListener('storage', e => {
   }
 });
 
+if (navigator.onLine &&
+    parent.location === location &&
+    'serviceWorker' in navigator &&
+    (window.isSecureContext || location.protocol === 'https:'))
+  navigator.serviceWorker.register('/serviceWorker.js', {
+    scope: '/'
+  }).catch(() => {});
+
 function onLoad() {
   if (!localStorage.noteValue)
     localStorage.noteValue = '';
@@ -309,14 +324,14 @@ function onLoad() {
     localStorage.settings = JSON.stringify({
       theme: {
         system: true,
-        value: matchMedia("(prefers-color-scheme: light)").matches
+        value: matchMedia('(prefers-color-scheme: light)').matches
       },
       wrap: false
     });
   {
     const opt = JSON.parse(localStorage.settings);
     if (opt.theme.system) {
-      const theme = matchMedia("(prefers-color-scheme: light)").matches;
+      const theme = matchMedia('(prefers-color-scheme: light)').matches;
       if (opt.theme.value !== theme) {
         opt.theme.value = theme;
         localStorage.settings = JSON.stringify(opt);

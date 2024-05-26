@@ -1,6 +1,8 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const database = new (require('SimpleDatabase'));
+const mimeTypes = require('mime-types');
 
 function readBody(req) {
   return new Promise((res, rej) => {
@@ -11,7 +13,7 @@ function readBody(req) {
   });
 }
 
-http.createServer(async (req, res) => {
+async function handleRequest(req, res) {
   let path = req.url.split('?')[0];
   if (!path.startsWith('/') || path.includes('..'))
     return res.writeHead(404).end();
@@ -38,7 +40,8 @@ http.createServer(async (req, res) => {
             try {
               body = (await readBody(req)).toString('utf8');
             } catch (e) {
-              res.writeHead(500).end(e.message);
+              console.log(e);
+              res.writeHead(500).end();
             }
             if (!body.length || body.includes('.'))
               return res.writeHead(400).end();
@@ -50,7 +53,8 @@ http.createServer(async (req, res) => {
             try {
               body = (await readBody(req)).toString('utf8');
             } catch (e) {
-              res.writeHead(500).end(e.message);
+              console.log(e);
+              res.writeHead(500).end();
             }
             if (!body.length || body.includes('.'))
               return res.writeHead(400).end();
@@ -82,13 +86,14 @@ http.createServer(async (req, res) => {
             try {
               body = (await readBody(req)).toString('utf8');
             } catch (e) {
-              res.writeHead(500).end(e.message);
+              console.log(e);
+              res.writeHead(500).end();
             }
             let json;
             try {
               json = JSON.parse(body);
-            } catch (e) {
-              return res.writeHead(400).end(e.message);
+            } catch {
+              res.writeHead(400).end();
             }
             if (typeof json.id !== 'string' ||
                 !json.id.length ||
@@ -116,10 +121,16 @@ http.createServer(async (req, res) => {
     if (fs.existsSync('.' + path + '.gz'))
       return fs.createReadStream('.' + path + '.gz')
         .pipe(res.writeHead(200, {
+          'Content-Type': mimeTypes.lookup(path),
           'Content-Encoding': 'gzip'
         }));
     return fs.createReadStream('.' + path)
-      .pipe(res.writeHead(200));
+      .pipe(res.writeHead(200, {
+        'Content-Type': mimeTypes.lookup(path)
+      }));
   }
   return res.writeHead(404).end();
-}).listen(80);
+}
+
+http.createServer(handleRequest).listen(80);
+https.createServer(handleRequest).listen(443);

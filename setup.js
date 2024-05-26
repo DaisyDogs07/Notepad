@@ -1,3 +1,5 @@
+require('child_process').execSync('npm i github:DaisyDogs07/SimpleDatabase terser mime-types');
+
 const terser = require('terser');
 const fs = require('fs');
 const {
@@ -10,7 +12,8 @@ const {
 [
   'Buffer.js',
   'index.js',
-  'settings.js'
+  'settings.js',
+  'serviceWorker.js'
 ].forEach(file => {
   fs.writeFileSync(file.replace('.', '.min.'), terser.minify_sync(terser.minify_sync(fs.readFileSync(file, 'utf8')).code).code);
   pipeline(
