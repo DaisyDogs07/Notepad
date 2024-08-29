@@ -19,7 +19,7 @@ function getAPINote() {
 
 async function sendNewAPINote() {
   return fetch('/api/note', {
-    method: 'POST',
+    method: 'PATCH',
     body: JSON.stringify({
       id: localStorage.id,
       value: noteArea.value
@@ -238,7 +238,7 @@ function switchToUserIDPrompt() {
       disabled: false
     },
     settingsBtn: {
-      innerText: 'Procees To API',
+      innerText: 'Proceed To API',
       onclick: checkAndProceedToAPI,
       disabled: true
     }
@@ -305,6 +305,31 @@ addEventListener('storage', e => {
     const opt = JSON.parse(e.newValue);
     updateTheme(opt.theme.value);
     noteArea.style.whiteSpace = opt.wrap ? null : 'nowrap';
+  }
+});
+
+addEventListener('keydown', async e => {
+  if (e.ctrlKey) {
+    if (e.code == 'Enter' || e.code == 'KeyS') {
+      e.preventDefault();
+      saveBtn.click();
+    }
+    if (e.code == 'KeyU') {
+      e.preventDefault();
+      let files = await showOpenFilePicker();
+      let file = await files[0].getFile();
+      let text = await file.text();
+      if (!isUtf8(Buffer.from(text, 'latin1')))
+        alert('Input file is likely a binary file. File will not be displayed.');
+      else noteArea.value = text;
+    }
+    if (e.code == 'KeyD') {
+      e.preventDefault();
+      const a = document.createElement('a');
+      a.href = 'data:text/plain;base64,' + Buffer.from(noteArea.value).toString('base64');
+      a.download = 'note.txt';
+      a.click();
+    }
   }
 });
 
